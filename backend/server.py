@@ -610,6 +610,7 @@ def foundry_explanation():
             "explanation": foundry_result.get("text", ""),
             "tokens_used": foundry_result.get("tokens_used", 0),
             "model": foundry_result.get("model", "azure-foundry-agent"),
+            "human_approval_required": True
         })
     except Exception as e:
         import traceback

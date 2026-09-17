@@ -1793,7 +1793,7 @@ if st.session_state.get("medpack_deterministic_result") is not None:
     )
 
     foundry_btn = st.button(
-        "Explain this deterministic result with Foundry",
+        "Get Foundry Explanation",
         key="foundry_explain_btn",
     )
     if foundry_btn:
@@ -1827,6 +1827,28 @@ if st.session_state.get("medpack_deterministic_result") is not None:
     if st.session_state.get("foundry_result") is not None:
         _fr = st.session_state["foundry_result"]
         if _fr.get("available"):
+            _tokens = int(_fr.get("tokens_used", 0) or 0)
+            _model  = _fr.get("model", "azure-foundry-agent")
+            _approval = "Yes" if _fr.get("human_approval_required", True) else "No"
+            
+            badge_html = f"""
+            <div style="background: linear-gradient(90deg, #1e293b, #0f172a); border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; margin-top: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="color: #60a5fa; font-weight: 700; font-size: 1.1rem;">
+                        ⚙️ Model: <span style="color: #f8fafc;">{_model}</span>
+                    </div>
+                    <div style="color: #c084fc; font-weight: 700; font-size: 1.1rem;">
+                        🪙 Tokens: <span style="color: #f8fafc;">{_tokens:,}</span>
+                    </div>
+                    <div style="color: #fbbf24; font-weight: 700; font-size: 1.1rem; background: rgba(251, 191, 36, 0.15); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(251, 191, 36, 0.4);">
+                        ⚠️ Human Approval Required: <span style="color: #f8fafc;">{_approval}</span>
+                    </div>
+                </div>
+            </div>
+            """
+            
+            st.markdown(badge_html, unsafe_allow_html=True)
+            
             st.markdown(
                 """
                 <style>
@@ -1863,12 +1885,8 @@ if st.session_state.get("medpack_deterministic_result") is not None:
             )
             st.markdown("#### \U0001F4AC Foundry Narrative")
             st.info(_fr.get("explanation", ""))
-            _tokens = int(_fr.get("tokens_used", 0) or 0)
-            _model  = _fr.get("model", "azure-foundry-agent")
-            if _tokens > 0:
-                st.caption(f"Model: {_model} | Tokens used: {_tokens:,}")
-            else:
-                st.caption(f"Model: {_model}")
+            
+            st.markdown(badge_html, unsafe_allow_html=True)
         else:
             st.warning(
                 "Warning: Foundry explanation unavailable - "
