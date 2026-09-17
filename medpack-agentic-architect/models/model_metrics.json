@@ -1,0 +1,7 @@
+{
+  "model_type": "XGBoost Regressor",
+  "MAE": 1.7451,
+  "RMSE": 2.1755,
+  "R2": 0.7352,
+  "training_size": 500
+}
